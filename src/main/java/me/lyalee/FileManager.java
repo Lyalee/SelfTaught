@@ -16,17 +16,12 @@ public class FileManager {
     }
     public static String readFile(String directoryName, String fileName){
         File file = new File(directoryName + fileName);
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(file));
+        try (BufferedReader br = new BufferedReader(new FileReader(file))){
             StringBuilder fileContent = new StringBuilder();
             String currentLine;
             while ((currentLine = br.readLine()) != null) {
                 fileContent.append(currentLine);
-                //Trying to close the buffer reader so it stops reading the file so it can be deleted
-                if((currentLine=br.readLine())==null){
-                    br.close();
                 }
-            }
             //System.out.println(fileContent);
             return fileContent.toString();
         } catch (IOException e) {
@@ -38,8 +33,9 @@ public class FileManager {
     public static void deleteFile(String directoryName, String fileName) {
         File file = new File (directoryName + fileName);
         if (file.exists()){
-            file.delete();
+            var deleted = file.delete();
             System.out.println("File deleted : " + fileName);
+            System.out.println("But did it work? " + deleted);
         }
         else{
             System.out.println("Could not proceed to delete : " + fileName + file.getAbsolutePath());
